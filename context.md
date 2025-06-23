@@ -1,0 +1,4 @@
+Tu dois livrer un prototype desktop d’une application destinée aux parents de jeunes sportifs en académies, pour une démo investisseurs.
+Le parent inscrit son enfant via un onboarding avancé, puis reçoit des recommandations personnalisées de compléments alimentaires (grâce à une logique basée sur un tableau Excel de profils).
+Le parent (et plus tard l’enfant, via app mobile) pourra accéder à un dashboard de suivi : santé, entraînement, commandes, objets connectés (données simulées), etc.
+Deux autres accès existent pour la démo : Admin (monitoring) et Academy (vue de ses inscrits et stats financières, 1 compte pour le proto).
