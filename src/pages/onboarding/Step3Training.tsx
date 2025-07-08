@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useOnboarding } from '../../context/OnboardingContext.tsx';
 
 const Step3Training: React.FC = () => {
   const { data, updateData, nextStep, prevStep } = useOnboarding();
   const [customAcademy, setCustomAcademy] = useState('');
   const [activeTab, setActiveTab] = useState<'primary' | 'secondary'>('primary');
+  const [showCelebration, setShowCelebration] = useState('');
+  const [showTrainingSuggestions, setShowTrainingSuggestions] = useState<{[key: string]: boolean}>({});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,8 +20,16 @@ const Step3Training: React.FC = () => {
       (data.secondaryTrainingIntensity && data.secondaryExperienceYears);
     
     if (primaryValid && secondaryValid) {
-      nextStep();
+      setShowCelebration('step-complete');
+      setTimeout(() => {
+        nextStep();
+      }, 800);
     }
+  };
+
+  const handleFieldUpdate = (field: string, value: any) => {
+    setShowCelebration(field);
+    setTimeout(() => setShowCelebration(''), 500);
   };
 
   const addCustomAcademy = () => {
@@ -26,13 +37,7 @@ const Step3Training: React.FC = () => {
     if (trimmedAcademy) {
       updateData({ sportsAcademy: trimmedAcademy });
       setCustomAcademy('');
-    }
-  };
-
-  const handleAcademyKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addCustomAcademy();
+      handleFieldUpdate('sportsAcademy', trimmedAcademy);
     }
   };
 
@@ -92,199 +97,203 @@ const Step3Training: React.FC = () => {
       });
       updateData(secondaryUpdates);
     }
+    
+    // Trigger celebration for the specific field
+    const fieldName = Object.keys(updates)[0];
+    handleFieldUpdate(fieldName, Object.values(updates)[0]);
   };
 
   const currentData = getCurrentData();
   const currentSport = activeTab === 'primary' ? data.primarySport : data.secondarySport;
 
+
+
   return (
-    <div className="relative">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="relative max-w-4xl mx-auto"
+    >
+      {/* Compact Header */}
+      <div className="mb-8 text-center">
+        <h2 className="text-3xl font-bold text-gray-900 mb-3">
+          Training Information
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          Tell us about your child's training routine and experience level
+        </p>
+      </div>
+
+      {/* Onglets pour Primary/Secondary Sport */}
+      {data.secondarySport && (
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white/50 border border-gray-300/60 rounded-xl p-1 mb-6"
+        >
+          <div className="flex gap-1">
+            <motion.button
+              type="button"
+              onClick={() => setActiveTab('primary')}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                activeTab === 'primary'
+                  ? 'bg-primary-500 text-white shadow-md'
+                  : 'bg-transparent text-gray-700 hover:bg-white/50'
+              }`}
+            >
+              {data.primarySport} (Primary)
+            </motion.button>
+            <motion.button
+              type="button"
+              onClick={() => setActiveTab('secondary')}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                activeTab === 'secondary'
+                  ? 'bg-primary-500 text-white shadow-md'
+                  : 'bg-transparent text-gray-700 hover:bg-white/50'
+              }`}
+            >
+              {data.secondarySport} (Secondary)
+            </motion.button>
+          </div>
+        </motion.div>
+      )}
+
       {/* Glassmorphism container */}
-      <div className="backdrop-blur-xl bg-white/30 border border-white/20 rounded-3xl p-8 md:p-12 shadow-2xl">
-        {/* Header with glassmorphism effect */}
-        <div className="mb-10 text-center">
-          <div className="inline-block backdrop-blur-md bg-primary-500/10 border border-primary-500/20 rounded-2xl px-6 py-3 mb-6">
-            <span className="text-primary-600 font-semibold text-sm uppercase tracking-wide">Step 3 of 6</span>
-          </div>
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">
-            Training & Habits
-          </h2>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-            Understanding your child's training routine and experience helps us recommend supplements 
-            that support their specific performance and recovery needs.
-          </p>
-        </div>
+      <div className="backdrop-blur-l bg-white/50 border border-white/30 rounded-3xl p-6 md:p-8 shadow-2xl">
 
-        {/* Onglets pour Primary/Secondary Sport */}
-        {data.secondarySport && (
-          <div className="backdrop-blur-md bg-white/40 border border-white/30 rounded-2xl p-2 mb-8">
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setActiveTab('primary')}
-                className={`flex-1 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
-                  activeTab === 'primary'
-                    ? 'bg-primary-500 text-white shadow-lg'
-                    : 'bg-white/50 text-gray-700 hover:bg-white/70'
-                }`}
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  {data.primarySport} (Primary)
-                </div>
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab('secondary')}
-                className={`flex-1 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
-                  activeTab === 'secondary'
-                    ? 'bg-primary-500 text-white shadow-lg'
-                    : 'bg-white/50 text-gray-700 hover:bg-white/70'
-                }`}
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
-                  </svg>
-                  {data.secondarySport} (Secondary)
-                </div>
-              </button>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          
+          {/* Training Frequency & Coaching - Inline */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-800 mb-3">
+                Training Sessions per Week *
+              </label>
+              <div className="grid grid-cols-1 gap-3">
+                {frequencyOptions.map((option) => (
+                  <motion.label
+                    key={option.value}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`relative flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                      currentData.trainingFrequency === option.value
+                        ? 'border-primary-500 bg-primary-500/20 shadow-md'
+                        : 'border-gray-300/60 bg-white/50 hover:border-gray-400/60 hover:bg-white/70'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name={`trainingFrequency_${activeTab}`}
+                      value={option.value}
+                      checked={currentData.trainingFrequency === option.value}
+                      onChange={(e) => updateCurrentData({ trainingFrequency: e.target.value as any })}
+                      className="sr-only"
+                    />
+                    <span className="font-medium text-gray-800">{option.label}</span>
+                    <AnimatePresence>
+                      {currentData.trainingFrequency === option.value && (
+                        <motion.div 
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center"
+                        >
+                          <motion.svg 
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 0.3, delay: 0.1 }}
+                            className="w-3 h-3 text-white" 
+                            fill="currentColor" 
+                            viewBox="0 0 20 20"
+                          >
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </motion.svg>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.label>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
 
-        <form onSubmit={handleSubmit} className="space-y-10">
-          {/* Training Frequency & Coaching */}
-          <div className="backdrop-blur-md bg-white/40 border border-white/30 rounded-2xl p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
-              <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center mr-3">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              Training Schedule {data.secondarySport && `(${currentSport})`}
-            </h3>
-            <p className="text-sm text-gray-600 mb-6 bg-white/30 rounded-xl">
-              Training frequency and coaching sessions help us understand the intensity and structure 
-              of your child's athletic program.
-            </p>
-            
-            <div className="grid grid-cols-1 gap-6">
-              {/* Training Frequency */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">
-                  Training Sessions per Week *
-                </label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {frequencyOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className={`relative flex flex-col p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 transform hover:scale-105 ${
-                        currentData.trainingFrequency === option.value
-                          ? 'border-primary-500 bg-primary-500/20 backdrop-blur-sm shadow-lg'
-                          : 'border-gray-300/80 bg-white/70 backdrop-blur-sm hover:border-gray-400/80 hover:bg-white/80 shadow-sm'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name={`trainingFrequency_${activeTab}`}
-                        value={option.value}
-                        checked={currentData.trainingFrequency === option.value}
-                        onChange={(e) => updateCurrentData({ trainingFrequency: e.target.value as any })}
-                        className="sr-only"
-                      />
-                      <div className="text-center">
-                        <span className="font-semibold text-lg text-gray-800 block mb-2">{option.label}</span>
-                        <span className="text-sm text-gray-600">{option.description}</span>
-                        {currentData.trainingFrequency === option.value && (
-                          <div className="mt-3">
-                            <div className="w-6 h-6 bg-primary-500 rounded-full mx-auto flex items-center justify-center">
-                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Coaching Sessions */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">
-                  Coaching Sessions per Week
-                </label>
-                <div className="relative">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    { value: '0', label: '0 sessions', description: 'Self-directed training' },
-                    { value: '1-2', label: '1-2 sessions', description: 'Regular coaching' },
-                    { value: '3', label: '3+ sessions', description: 'Intensive coaching' }
-                  ].map((option) => (
-                    <label
-                      key={option.value}
-                      className={`relative flex flex-col p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 transform hover:scale-105 ${
-                        currentData.coachingSessions === option.value
-                          ? 'border-primary-500 bg-primary-500/20 backdrop-blur-sm shadow-lg'
-                          : 'border-gray-300/80 bg-white/70 backdrop-blur-sm hover:border-gray-400/80 hover:bg-white/80 shadow-sm'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name={`coachingSessions_${activeTab}`}
-                        value={option.value}
-                        checked={currentData.coachingSessions === option.value}
-                        onChange={(e) => updateCurrentData({ coachingSessions: e.target.value as any })}
-                        className="sr-only"
-                      />
-                      <div className="text-center">
-                        <span className="font-semibold text-lg text-gray-800 block mb-2">{option.label}</span>
-                        <span className="text-sm text-gray-600">{option.description}</span>
-                        {currentData.coachingSessions === option.value && (
-                          <div className="mt-3">
-                            <div className="w-6 h-6 bg-primary-500 rounded-full mx-auto flex items-center justify-center">
-                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </label>
-                  ))}
-                </div>
-                </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-800 mb-3">
+                Coaching Sessions per Week
+              </label>
+              <div className="grid grid-cols-1 gap-3">
+                {[
+                  { value: '0', label: '0 sessions' },
+                  { value: '1-2', label: '1-2 sessions' },
+                  { value: '3', label: '3+ sessions' }
+                ].map((option) => (
+                  <motion.label
+                    key={option.value}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`relative flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                      currentData.coachingSessions === option.value
+                        ? 'border-primary-500 bg-primary-500/20 shadow-md'
+                        : 'border-gray-300/60 bg-white/50 hover:border-gray-400/60 hover:bg-white/70'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name={`coachingSessions_${activeTab}`}
+                      value={option.value}
+                      checked={currentData.coachingSessions === option.value}
+                      onChange={(e) => updateCurrentData({ coachingSessions: e.target.value as any })}
+                      className="sr-only"
+                    />
+                    <span className="font-medium text-gray-800">{option.label}</span>
+                    <AnimatePresence>
+                      {currentData.coachingSessions === option.value && (
+                        <motion.div 
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center"
+                        >
+                          <motion.svg 
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 0.3, delay: 0.1 }}
+                            className="w-3 h-3 text-white" 
+                            fill="currentColor" 
+                            viewBox="0 0 20 20"
+                          >
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </motion.svg>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.label>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Training Intensity */}
-          <div className="backdrop-blur-md bg-white/40 border border-white/30 rounded-2xl p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
-              <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center mr-3">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
+          {/* Training Intensity - Compact */}
+          <div>
+            <label className="block text-sm font-medium text-gray-800 mb-3">
               Training Intensity * {data.secondarySport && `(${currentSport})`}
-            </h3>
-            <p className="text-sm text-gray-600 mb-6 bg-white/30 rounded-xl">
-              Training intensity affects nutritional and recovery needs. Higher intensity requires 
-              more targeted supplementation for performance and recovery.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            </label>
+            <div className="grid grid-cols-3 gap-3">
               {intensityOptions.map((option) => (
-                <label
+                <motion.label
                   key={option.value}
-                  className={`relative flex flex-col p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 transform hover:scale-105 ${
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`relative flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
                     currentData.trainingIntensity === option.value
-                      ? 'border-primary-500 bg-primary-500/20 backdrop-blur-sm shadow-lg'
-                      : 'border-gray-300/80 bg-white/70 backdrop-blur-sm hover:border-gray-400/80 hover:bg-white/80 shadow-sm'
+                      ? 'border-primary-500 bg-primary-500/20 shadow-md'
+                      : 'border-gray-300/60 bg-white/50 hover:border-gray-400/60 hover:bg-white/70'
                   }`}
                 >
                   <input
@@ -295,47 +304,49 @@ const Step3Training: React.FC = () => {
                     onChange={(e) => updateCurrentData({ trainingIntensity: e.target.value as any })}
                     className="sr-only"
                   />
-                  <div className="text-center">
-                    <span className="font-semibold text-lg text-gray-800 block mb-2">{option.label}</span>
-                    <span className="text-sm text-gray-600">{option.description}</span>
+                  <span className="font-medium text-gray-800">{option.value}</span>
+                  <AnimatePresence>
                     {currentData.trainingIntensity === option.value && (
-                      <div className="mt-3">
-                        <div className="w-6 h-6 bg-primary-500 rounded-full mx-auto flex items-center justify-center">
-                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                      </div>
+                      <motion.div 
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center"
+                      >
+                        <motion.svg 
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.3, delay: 0.1 }}
+                          className="w-3 h-3 text-white" 
+                          fill="currentColor" 
+                          viewBox="0 0 20 20"
+                        >
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </motion.svg>
+                      </motion.div>
                     )}
-                  </div>
-                </label>
+                  </AnimatePresence>
+                </motion.label>
               ))}
             </div>
           </div>
 
-          {/* Experience Level */}
-          <div className="backdrop-blur-md bg-white/40 border border-white/30 rounded-2xl p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
-              <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center mr-3">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                </svg>
-              </div>
+          {/* Experience Level - Compact */}
+          <div>
+            <label className="block text-sm font-medium text-gray-800 mb-3">
               Experience Level * {data.secondarySport && `(${currentSport})`}
-            </h3>
-            <p className="text-sm text-gray-600 mb-6 bg-white/30 rounded-xl">
-              Experience level helps us understand your child's development stage and appropriate 
-              supplement complexity for their athletic maturity.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            </label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {experienceOptions.map((option) => (
-                <label
+                <motion.label
                   key={option.value}
-                  className={`relative flex flex-col p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 transform hover:scale-105 ${
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`relative flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
                     currentData.experienceYears === option.value
-                      ? 'border-primary-500 bg-primary-500/20 backdrop-blur-sm shadow-lg'
-                      : 'border-gray-300/80 bg-white/70 backdrop-blur-sm hover:border-gray-400/80 hover:bg-white/80 shadow-sm'
+                      ? 'border-primary-500 bg-primary-500/20 shadow-md'
+                      : 'border-gray-300/60 bg-white/50 hover:border-gray-400/60 hover:bg-white/70'
                   }`}
                 >
                   <input
@@ -346,48 +357,50 @@ const Step3Training: React.FC = () => {
                     onChange={(e) => updateCurrentData({ experienceYears: e.target.value as any })}
                     className="sr-only"
                   />
-                  <div className="text-center">
-                    <span className="font-semibold text-lg text-gray-800 block mb-2">{option.label}</span>
-                    <span className="text-xs text-gray-600">{option.description}</span>
+                  <span className="font-medium text-gray-800 text-sm">{option.label}</span>
+                  <AnimatePresence>
                     {currentData.experienceYears === option.value && (
-                      <div className="mt-3">
-                        <div className="w-6 h-6 bg-primary-500 rounded-full mx-auto flex items-center justify-center">
-                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                      </div>
+                      <motion.div 
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center"
+                      >
+                        <motion.svg 
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.3, delay: 0.1 }}
+                          className="w-3 h-3 text-white" 
+                          fill="currentColor" 
+                          viewBox="0 0 20 20"
+                        >
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </motion.svg>
+                      </motion.div>
                     )}
-                  </div>
-                </label>
+                  </AnimatePresence>
+                </motion.label>
               ))}
             </div>
           </div>
 
           {/* Academic Level - Only show on primary sport tab or when no secondary sport */}
           {(!data.secondarySport || activeTab === 'primary') && (
-          <div className="backdrop-blur-md bg-white/40 border border-white/30 rounded-2xl p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
-              <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center mr-3">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-800 mb-3">
               Academic Level *
-            </h3>
-            <p className="text-sm text-gray-600 mb-6 bg-white/30 rounded-xl">
-              Academic level helps us understand developmental stage and scheduling demands 
-              that may affect nutrition and supplement timing.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            </label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {academicOptions.map((option) => (
-                <label
+                <motion.label
                   key={option.value}
-                  className={`relative flex flex-col p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 transform hover:scale-105 ${
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`relative flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
                     data.academicLevel === option.value
-                      ? 'border-primary-500 bg-primary-500/20 backdrop-blur-sm shadow-lg'
-                      : 'border-gray-300/80 bg-white/70 backdrop-blur-sm hover:border-gray-400/80 hover:bg-white/80 shadow-sm'
+                      ? 'border-primary-500 bg-primary-500/20 shadow-md'
+                      : 'border-gray-300/60 bg-white/50 hover:border-gray-400/60 hover:bg-white/70'
                   }`}
                 >
                   <input
@@ -395,23 +408,36 @@ const Step3Training: React.FC = () => {
                     name="academicLevel"
                     value={option.value}
                     checked={data.academicLevel === option.value}
-                    onChange={(e) => updateData({ academicLevel: e.target.value as any })}
+                    onChange={(e) => {
+                      updateData({ academicLevel: e.target.value as any });
+                      handleFieldUpdate('academicLevel', e.target.value);
+                    }}
                     className="sr-only"
                   />
-                  <div className="text-center">
-                    <span className="font-semibold text-lg text-gray-800 block mb-2">{option.label}</span>
-                    <span className="text-xs text-gray-600">{option.description}</span>
+                  <span className="font-medium text-gray-800 text-sm">{option.label}</span>
+                  <AnimatePresence>
                     {data.academicLevel === option.value && (
-                      <div className="mt-3">
-                        <div className="w-6 h-6 bg-primary-500 rounded-full mx-auto flex items-center justify-center">
-                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                      </div>
+                      <motion.div 
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center"
+                      >
+                        <motion.svg 
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.3, delay: 0.1 }}
+                          className="w-3 h-3 text-white" 
+                          fill="currentColor" 
+                          viewBox="0 0 20 20"
+                        >
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </motion.svg>
+                      </motion.div>
                     )}
-                  </div>
-                </label>
+                  </AnimatePresence>
+                </motion.label>
               ))}
             </div>
           </div>
@@ -419,97 +445,226 @@ const Step3Training: React.FC = () => {
 
           {/* Sports Academy - Only show on primary sport tab or when no secondary sport */}
           {(!data.secondarySport || activeTab === 'primary') && (
-          <div className="backdrop-blur-md bg-white/40 border border-white/30 rounded-2xl p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
-              <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center mr-3">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-800 mb-2">
               Sports Academy (Optional)
-            </h3>
-            <p className="text-sm text-gray-600 mb-6 bg-white/30 rounded-xl">
-              If your child trains at a specific sports academy, we can coordinate with them 
-              for optimal nutrition and supplement programs.
-            </p>
-            
+            </label>
             <div className="flex gap-3">
-              <input
-                type="text"
-                value={data.sportsAcademy || customAcademy}
-                onChange={(e) => {
-                  if (data.sportsAcademy) {
-                    updateData({ sportsAcademy: e.target.value });
-                  } else {
-                    setCustomAcademy(e.target.value);
-                  }
-                }}
-                onKeyPress={handleAcademyKeyPress}
-                className="flex-1 px-4 py-4 backdrop-blur-sm bg-white/70 border-2 border-gray-300/80 rounded-xl focus:ring-4 focus:ring-primary-500/30 focus:border-primary-500 focus:bg-white/90 hover:border-gray-400/80 hover:bg-white/80 transition-all duration-300 text-gray-800 placeholder-gray-500 shadow-sm"
-                placeholder="Enter sports academy name (optional)..."
-              />
+              <div className="relative flex-1">
+                <motion.input
+                  type="text"
+                  value={data.sportsAcademy || customAcademy}
+                  onChange={(e) => {
+                    if (data.sportsAcademy) {
+                      updateData({ sportsAcademy: e.target.value });
+                    } else {
+                      setCustomAcademy(e.target.value);
+                    }
+                  }}
+                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomAcademy())}
+                  whileFocus={{ scale: 1.02 }}
+                  className="w-full px-4 py-3 backdrop-blur-sm bg-white/70 border border-gray-300/60 rounded-xl focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all duration-200 text-gray-800 placeholder-gray-500"
+                  placeholder="Academy name (optional)"
+                />
+                {data.sportsAcademy && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="absolute right-3 top-3 text-green-500"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </motion.div>
+                )}
+              </div>
               {!data.sportsAcademy && customAcademy && (
-                <button
+                <motion.button
                   type="button"
                   onClick={addCustomAcademy}
-                  className="px-6 py-4 bg-primary-500 text-white font-medium rounded-xl hover:bg-primary-600 transition-colors duration-300 shadow-sm"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-4 py-3 bg-primary-500 text-white font-medium rounded-xl hover:bg-primary-600 transition-colors duration-200"
                 >
                   Save
-                </button>
+                </motion.button>
               )}
             </div>
 
             {data.sportsAcademy && (
-              <div className="mt-4 p-4 bg-white/30 rounded-xl">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-3 p-3 bg-white/50 rounded-xl"
+              >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-gray-800">Academy: {data.sportsAcademy}</span>
-                  <button
+                  <motion.button
                     type="button"
                     onClick={() => updateData({ sportsAcademy: '' })}
-                    className="text-red-500 hover:text-red-700 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="text-red-500 hover:text-red-700 transition-colors text-sm"
                   >
                     Remove
-                  </button>
+                  </motion.button>
                 </div>
-              </div>
+              </motion.div>
             )}
           </div>
           )}
 
+          {/* Smart Training Suggestions */}
+          <AnimatePresence>
+            {Object.entries(showTrainingSuggestions).map(([key, show]) => show && (
+              <motion.div
+                key={key}
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="bg-purple-50 border border-purple-200 rounded-xl p-4 mb-4"
+              >
+                <div className="flex items-start">
+                  <svg className="w-5 h-5 text-purple-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                  </svg>
+                  <div className="flex-1">
+                    <p className="text-sm text-purple-800 font-medium mb-1">Training Insight</p>
+                    <p className="text-sm text-purple-700">
+                      {key === 'intensityWarning' && '⚠️ High intensity with low experience - we\'ll include recovery and injury prevention supplements'}
+                      {key === 'soccerEndurance' && '⚽ High-frequency soccer training detected - endurance and electrolyte support will be emphasized'}
+                      {key === 'swimmingSuggestion' && '🏊‍♀️ Swimming athlete - cardiovascular support and chlorine protection will be included'}
+                      {key === 'basketballElite' && '🏀 Elite basketball player (7+ years) - advanced performance optimization will be prioritized'}
+                      {key === 'stressManagement' && '🎓 High school + intense training - stress management and cognitive support will be added'}
+                      {key === 'selfTraining' && '💪 Self-training detected - extra focus on proper nutrition timing and recovery'}
+                      {key === 'crossTraining' && '🤸‍♀️ Cross-training athlete - balanced nutrition for multiple sport demands'}
+                    </p>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowTrainingSuggestions(prev => ({ ...prev, [key]: false }))}
+                    className="text-purple-400 hover:text-purple-600 ml-2"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </motion.button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          {/* Real-time Training Preview */}
+          {(currentData.trainingFrequency || currentData.trainingIntensity || currentData.experienceYears || data.academicLevel) && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-orange-50 border border-orange-200 rounded-xl p-4"
+            >
+              <div className="flex items-center mb-2">
+                <svg className="w-4 h-4 text-orange-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span className="text-sm font-medium text-orange-800">Training Profile Preview</span>
+              </div>
+              <p className="text-sm text-orange-700">
+                {currentData.trainingIntensity && currentData.experienceYears
+                  ? `${currentSport || 'Primary sport'}: ${currentData.trainingIntensity} intensity, ${currentData.experienceYears} experience - Optimizing training recommendations! ⚡`
+                  : currentData.trainingFrequency
+                  ? `Training frequency: ${currentData.trainingFrequency} sessions/week - Building workout schedule 📅`
+                  : currentData.trainingIntensity
+                  ? `Training intensity: ${currentData.trainingIntensity} - Personalizing difficulty level 💪`
+                  : data.academicLevel
+                  ? `Academic level: ${data.academicLevel} - Balancing school and sports 🎓`
+                  : 'Training profile is taking shape! 🏃‍♂️'
+                }
+              </p>
+            </motion.div>
+          )}
+
           {/* Navigation Buttons */}
-          <div className="flex justify-between pt-8">
+          <div className="flex justify-between pt-6">
             <button
               type="button"
               onClick={prevStep}
-              className="group relative px-8 py-4 backdrop-blur-sm bg-white/70 border-2 border-gray-300/80 text-gray-700 font-bold rounded-2xl hover:border-gray-400/80 hover:bg-white/80 transition-all duration-300 transform hover:scale-105 shadow-sm"
+              className="group px-6 py-3 bg-white/70 border border-gray-300/60 text-gray-700 font-medium rounded-xl hover:border-gray-400/60 hover:bg-white/80 transition-all duration-200"
             >
               <span className="flex items-center">
-                <svg className="mr-2 w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="mr-2 w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
                 Back
               </span>
             </button>
             
-            <button
+            <motion.button
               type="submit"
-              className="group relative px-12 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold rounded-2xl hover:from-primary-600 hover:to-primary-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-2xl"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative px-8 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-medium rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
               disabled={
                 !data.trainingIntensity || !data.experienceYears || !data.academicLevel ||
                 (!!data.secondarySport && (!data.secondaryTrainingIntensity || !data.secondaryExperienceYears))
               }
             >
-              <span className="flex items-center">
-                Continue to Account Setup
-                <svg className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+              <span className="flex items-center relative z-10">
+                {showCelebration === 'step-complete' ? 'Excellent! Almost there...' : 'Continue'}
+                {showCelebration === 'step-complete' ? (
+                  <motion.svg 
+                    initial={{ rotate: 0 }}
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 0.5 }}
+                    className="ml-2 w-4 h-4" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </motion.svg>
+                ) : (
+                  <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                )}
               </span>
-            </button>
+              
+              {/* Celebration confetti */}
+              {showCelebration === 'step-complete' && (
+                <>
+                  {[...Array(6)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ 
+                        y: 0, 
+                        x: 0, 
+                        opacity: 1,
+                        rotate: 0 
+                      }}
+                      animate={{ 
+                        y: -30 + Math.random() * -20, 
+                        x: (Math.random() - 0.5) * 60, 
+                        opacity: 0,
+                        rotate: Math.random() * 360 
+                      }}
+                      transition={{ 
+                        duration: 0.6,
+                        delay: i * 0.1 
+                      }}
+                      className="absolute top-1/2 left-1/2 w-2 h-2 bg-yellow-300 rounded-full"
+                      style={{
+                        backgroundColor: ['#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#f87171'][i % 5]
+                      }}
+                    />
+                  ))}
+                </>
+              )}
+            </motion.button>
           </div>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

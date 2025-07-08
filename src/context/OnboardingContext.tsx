@@ -68,7 +68,7 @@ export const OnboardingProvider: React.FC<OnboardingProviderProps> = ({ children
   };
 
   const nextStep = () => {
-    if (currentStep < 6) {
+    if (currentStep < 8) {
       setCurrentStep(prev => prev + 1);
       // Scroll to top when changing steps
       window.scrollTo({ top: 0, behavior: 'smooth' });
