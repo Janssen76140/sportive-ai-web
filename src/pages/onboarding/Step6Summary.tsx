@@ -298,10 +298,12 @@ const Step6Summary: React.FC = () => {
               {/* Medical History Card */}
               <div className="bg-white rounded-2xl p-4 shadow-sm text-center">
                 <div className="text-2xl mb-2">🏥</div>
-                <div className="text-lg font-bold text-gray-900">{data.medicalHistory || 'None'}</div>
+                <div className="text-lg font-bold text-gray-900">
+                  {!data.medicalHistory || data.medicalHistory.length === 0 || data.medicalHistory.includes('None') ? 'None' : data.medicalHistory.join(', ')}
+                </div>
                 <div className="text-xs text-gray-500 uppercase tracking-wide">Medical</div>
-                <div className={`text-sm font-medium mt-1 ${data.medicalHistory === 'None' ? 'text-green-500' : 'text-blue-500'}`}>
-                  {data.medicalHistory === 'None' ? 'Clear' : 'Noted'}
+                <div className={`text-sm font-medium mt-1 ${!data.medicalHistory || data.medicalHistory.length === 0 || data.medicalHistory.includes('None') ? 'text-green-500' : 'text-blue-500'}`}>
+                  {!data.medicalHistory || data.medicalHistory.length === 0 || data.medicalHistory.includes('None') ? 'Clear' : 'Noted'}
                 </div>
               </div>
             </div>

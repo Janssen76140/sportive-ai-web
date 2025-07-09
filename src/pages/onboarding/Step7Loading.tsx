@@ -13,7 +13,6 @@ const Step7Loading: React.FC = () => {
   const { nextStep } = useOnboarding();
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
     let stepTimeout: NodeJS.Timeout;
@@ -125,41 +124,6 @@ const Step7Loading: React.FC = () => {
           ))}
         </div>
 
-        {/* AI Animation Video */}
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center mb-4">
-            {!videoError ? (
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                controls={false}
-                className="w-64 h-64 object-contain rounded-lg"
-                onError={(e) => {
-                  console.error('Video error:', e);
-                  setVideoError(true);
-                }}
-                onLoadStart={() => console.log('Video loading started')}
-                onCanPlay={() => console.log('Video can play')}
-              >
-                <source src="/assets/load1.mp4" type="video/mp4" />
-              </video>
-            ) : (
-              /* Fallback animation si la vidéo ne charge pas */
-              <div className="w-64 h-64 bg-primary-500/10 rounded-full flex items-center justify-center">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                </div>
-              </div>
-            )}
-          </div>
-          <p className="text-sm text-gray-500">
-            AI Processing...
-          </p>
-        </div>
 
       </div>
     </div>
