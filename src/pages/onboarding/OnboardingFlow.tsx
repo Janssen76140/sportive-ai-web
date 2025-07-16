@@ -30,8 +30,8 @@ const OnboardingFlow: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50 relative">
       {/* Background Image */}
       <div 
-        className="absolute inset-0 opacity-20 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/assets/wallpaper.jpeg')" }}
+        className="absolute inset-0 opacity-10 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/assets/wallpaper2.jpeg')" }}
       />
       
       {/* Layout container with flex */}
