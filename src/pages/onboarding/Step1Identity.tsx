@@ -43,18 +43,9 @@ const Step1Identity: React.FC = () => {
       transition={{ duration: 0.5 }}
       className="relative max-w-4xl mx-auto"
     >
-      {/* Compact Header */}
-      <div className="mb-8 text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-3">
-          Let's get started
-        </h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Tell us about your child to personalize their nutrition recommendations
-        </p>
-      </div>
 
       {/* Glassmorphism container */}
-      <div className="backdrop-blur-l bg-white/50 border border-white/30 rounded-3xl p-6 md:p-8 shadow-2xl">
+      <div className="backdrop-blur-l bg-white/70 border border-white/30 rounded-3xl p-8 md:p-12 lg:p-16 shadow-2xl">
         <form onSubmit={handleSubmit} className="space-y-6">
           
           {/* Name Fields - Inline */}

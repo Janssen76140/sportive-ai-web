@@ -65,7 +65,7 @@ const Step7Loading: React.FC = () => {
   return (
     <div className="relative max-w-4xl mx-auto">
       {/* Glassmorphism container */}
-      <div className="backdrop-blur-l bg-white/50 border border-white/30 rounded-3xl p-8 md:p-12 shadow-2xl">
+      <div className="backdrop-blur-l bg-white/70 border border-white/30 rounded-3xl p-8 md:p-12 lg:p-16 shadow-2xl">
         
         {/* Logo */}
         <div className="text-center mb-8">
@@ -74,12 +74,6 @@ const Step7Loading: React.FC = () => {
             alt="SportiveAI" 
             className="h-16 mx-auto mb-6"
           />
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">
-            AI is Generating Your Recommendations
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Please wait while our AI analyzes your profile and creates personalized supplement recommendations
-          </p>
         </div>
 
         {/* Current Step Text */}

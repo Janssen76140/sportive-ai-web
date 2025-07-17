@@ -59,7 +59,7 @@ const LandingPage: React.FC = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen overflow-hidden bg-black">
+      <section className="relative h-[85vh] overflow-hidden bg-black">
         {/* Background Images Carousel */}
         {slides.map((slide, index) => (
           <div 
@@ -77,7 +77,7 @@ const LandingPage: React.FC = () => {
         ))}
         
         {/* Content */}
-        <div className="relative z-10 min-h-screen flex items-center">
+        <div className="relative z-10 h-full flex items-center">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div className="max-w-2xl">
               <h1 className="text-3xl tracking-tight font-extrabold text-white sm:text-4xl md:text-5xl uppercase">
@@ -118,6 +118,7 @@ const LandingPage: React.FC = () => {
             />
           ))}
         </div>
+        
       </section>
 
       {/* Why Choose Section */}
