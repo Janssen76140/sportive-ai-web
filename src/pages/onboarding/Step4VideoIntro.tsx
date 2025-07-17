@@ -1,33 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useOnboarding } from '../../context/OnboardingContext.tsx';
 
 const Step4VideoIntro: React.FC = () => {
   const { nextStep } = useOnboarding();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [showSkip, setShowSkip] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(10); // 10 seconds countdown
 
   useEffect(() => {
     // Show skip button after 2 seconds
-    const skipTimer = setTimeout(() => setShowSkip(true), 2000);
-    
-    // Countdown timer
-    const countdownInterval = setInterval(() => {
-      setTimeRemaining((prev) => {
-        if (prev <= 1) {
-          clearInterval(countdownInterval);
-          nextStep();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    const timer = setTimeout(() => setShowSkip(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
-    return () => {
-      clearTimeout(skipTimer);
-      clearInterval(countdownInterval);
-    };
-  }, [nextStep]);
+  useEffect(() => {
+    // Try to play video when it's loaded
+    if (isVideoLoaded && videoRef.current) {
+      videoRef.current.play().catch(err => {
+        console.log('Autoplay failed, but video is loaded:', err);
+      });
+    }
+  }, [isVideoLoaded]);
+
+  const handleVideoEnd = () => {
+    setTimeout(() => {
+      nextStep();
+    }, 500);
+  };
+
+  const handleVideoLoaded = () => {
+    setIsVideoLoaded(true);
+  };
 
   return (
     <motion.div 
@@ -38,61 +42,44 @@ const Step4VideoIntro: React.FC = () => {
     >
       {/* Glassmorphism container */}
       <div className="backdrop-blur-l bg-white/70 border border-white/30 rounded-3xl p-6 md:p-8 lg:p-10 shadow-2xl">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Coming Soon: Mobile App Preview</h2>
-          <p className="text-gray-600 mb-8">Our mobile app is currently in development. Get ready for an amazing experience!</p>
+        <div className="relative rounded-2xl overflow-hidden bg-black">
+          <video
+            ref={videoRef}
+            className="w-full h-auto"
+            src="https://res.cloudinary.com/dhmxbbc7x/video/upload/v1752745532/video2_bi9wuj.mp4"
+            autoPlay
+            muted
+            playsInline
+            controls={false}
+            onEnded={handleVideoEnd}
+            onLoadedData={handleVideoLoaded}
+            onError={(e) => {
+              console.error('Video failed to load:', e);
+              // Skip to next step after 3 seconds if video fails
+              setTimeout(() => nextStep(), 3000);
+            }}
+          />
           
-          {/* Placeholder for video/image */}
-          <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary-400 to-primary-600 aspect-video max-w-4xl mx-auto">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-white text-center">
-                <svg className="w-24 h-24 mx-auto mb-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18l.01 0M8.21 15.79L12 12m0 0l3.79 3.79M12 12l.01-7" />
-                </svg>
-                <h3 className="text-xl font-semibold mb-2">Mobile App Features</h3>
-                <ul className="text-sm space-y-1">
-                  <li>✓ Track your child's progress</li>
-                  <li>✓ Real-time notifications</li>
-                  <li>✓ Connect with coaches</li>
-                  <li>✓ Monitor supplement schedule</li>
-                </ul>
+          {/* Loading state */}
+          {!isVideoLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                <p className="text-white text-sm">Loading video preview...</p>
               </div>
             </div>
-            
-            {/* Try to load video as fallback */}
-            <video
-              className="absolute inset-0 w-full h-full object-cover opacity-20"
-              src="/assets/video2.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
-          </div>
-          
-          {/* Countdown timer */}
-          <div className="mt-8">
-            <p className="text-gray-600">Continuing in {timeRemaining} seconds...</p>
-            <div className="w-full max-w-xs mx-auto mt-2 bg-gray-200 rounded-full h-2">
-              <motion.div
-                className="h-full bg-primary-500 rounded-full"
-                initial={{ width: "100%" }}
-                animate={{ width: "0%" }}
-                transition={{ duration: 10, ease: "linear" }}
-              />
-            </div>
-          </div>
+          )}
           
           {/* Skip button */}
           {showSkip && (
             <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
               onClick={() => nextStep()}
-              className="mt-4 px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-all duration-200"
+              className="absolute bottom-4 right-4 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-lg text-sm font-medium transition-all duration-200"
             >
-              Continue Now →
+              Skip →
             </motion.button>
           )}
         </div>
