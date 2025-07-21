@@ -41,11 +41,10 @@ const Step4VideoIntro: React.FC = () => {
       className="relative max-w-7xl mx-auto"
     >
       {/* Glassmorphism container */}
-      <div className="backdrop-blur-l bg-white/70 border border-white/30 rounded-3xl p-6 md:p-8 lg:p-10 shadow-2xl">
-        <div className="relative rounded-2xl overflow-hidden bg-black">
+        <div className="relative rounded-2xl overflow-hidden bg-black w-full max-w-5xl mx-auto">
           <video
             ref={videoRef}
-            className="w-full h-auto"
+            className="w-full h-auto max-h-[90vh]"
             src="https://res.cloudinary.com/dhmxbbc7x/video/upload/v1752745532/video2_bi9wuj.mp4"
             autoPlay
             muted
@@ -83,7 +82,6 @@ const Step4VideoIntro: React.FC = () => {
             </motion.button>
           )}
         </div>
-      </div>
     </motion.div>
   );
 };
