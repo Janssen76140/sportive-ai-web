@@ -83,26 +83,26 @@ const Step8Results: React.FC = () => {
       };
     }
     // fallback mock
-    const primaryGoal = data.goals[0] || 'general_health';
-    const goalDescriptions = {
-      'strength': 'muscle strength and power development',
-      'endurance': 'endurance performance and stamina',
-      'recovery': 'faster recovery and muscle repair',
-      'energy': 'sustained energy and focus',
-      'general_health': 'overall health and athletic performance'
+    const primaryGoal = data.goals?.[0] || 'Basic';
+    const goalDescriptions: Record<string, string> = {
+      'Basic': 'overall health and athletic performance',
+      'Recovery': 'faster recovery and muscle repair',
+      'Endurance': 'endurance performance and stamina',
+      'Performance': 'peak athletic performance and power'
     };
     
-    const ageGroupDosage = {
-      '6-9': '1/2 scoop (12.5g) daily',
-      '10-13': '3/4 scoop (18.75g) daily', 
-      '14-18': '1 scoop (25g) daily'
+    const ageGroupDosage: Record<string, string> = {
+      '6–9': '1/2 scoop (12.5g) daily',
+      '10–13': '3/4 scoop (18.75g) daily', 
+      '14–18': '1 scoop (25g) daily'
     };
     
     return {
       name: "SportiveAI Complete",
       type: "All-in-One Formula",
-      description: `Personalized supplement blend specifically formulated for ${data.firstName}'s ${goalDescriptions[primaryGoal] || goalDescriptions['general_health']} based on their ${data.primarySport} training profile.`,
-      dosage: ageGroupDosage[data.ageGroup] || ageGroupDosage['14-18'],
+      description: `Personalized supplement blend specifically formulated for ${data.firstName}'s ${goalDescriptions[primaryGoal] || goalDescriptions['Basic']} based on their ${data.primarySport} training profile.`,
+      dosage: ageGroupDosage[data.ageGroup] || ageGroupDosage['14–18'],
+      timing: 'Daily',
       image: "/assets/complement.png",
       features: [
         "Age-appropriate nutrient profile",
@@ -185,9 +185,15 @@ const Step8Results: React.FC = () => {
                   </ul>
                 </div>
                 
-                <div className="bg-white/60 rounded-lg p-3 border border-primary-200/50">
-                  <span className="text-sm font-semibold text-gray-700">Recommended Dosage:</span>
-                  <p className="text-primary-700 font-medium">{recommendation.dosage}</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-white/60 rounded-lg p-3 border border-primary-200/50">
+                    <span className="text-sm font-semibold text-gray-700 block">Dosage:</span>
+                    <p className="text-primary-700 font-medium">{recommendation.dosage}</p>
+                  </div>
+                  <div className="bg-white/60 rounded-lg p-3 border border-primary-200/50">
+                    <span className="text-sm font-semibold text-gray-700 block">Timing:</span>
+                    <p className="text-primary-700 font-medium">{recommendation.timing}</p>
+                  </div>
                 </div>
               </div>
             </div>

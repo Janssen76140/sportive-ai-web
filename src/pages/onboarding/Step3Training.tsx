@@ -562,9 +562,7 @@ const Step3Training: React.FC = () => {
               </div>
               <p className="text-sm text-orange-700">
                 {currentData.trainingIntensity && currentData.experienceYears
-                  ? `${currentSport || 'Primary sport'}: ${currentData.trainingIntensity} intensity, ${currentData.experienceYears} experience - Optimizing training recommendations! ⚡`
-                  : currentData.trainingFrequency
-                  ? `Training frequency: ${currentData.trainingFrequency} sessions/week - Building workout schedule 📅`
+                  ? `Great news, our AI is working in the background, and SportiveAI has been able to match ${data.firstName}’s heath profile and ${data.primarySport} training routine to design and optimized recommendation.`
                   : currentData.trainingIntensity
                   ? `Training intensity: ${currentData.trainingIntensity} - Personalizing difficulty level 💪`
                   : data.academicLevel

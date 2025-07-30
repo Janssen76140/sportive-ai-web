@@ -38,9 +38,16 @@ const Step4VideoIntro: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="relative max-w-7xl mx-auto"
+      className="relative max-w-7xl mx-auto space-y-8"
     >
-      {/* Glassmorphism container */}
+      {/* Catchphrase in glassmorphism container */}
+      <div className="backdrop-blur-l bg-white/70 border border-white/30 rounded-3xl p-6 md:p-8 shadow-2xl max-w-4xl mx-auto">
+        <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800">
+          SportiveAI: The first AI powered platform for young athletes.
+        </h2>
+      </div>
+      
+      {/* Video container */}
         <div className="relative rounded-2xl overflow-hidden bg-black w-full max-w-5xl mx-auto">
           <video
             ref={videoRef}

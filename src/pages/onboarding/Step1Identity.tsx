@@ -320,7 +320,7 @@ const Step1Identity: React.FC = () => {
               </div>
               <p className="text-sm text-primary-700">
                 {data.firstName && data.primarySport 
-                  ? `We're preparing ${data.primarySport.toLowerCase()}-specific recommendations for ${data.firstName}! 🏆`
+                  ? `SportiveAI’s proprietary engine is already at work and to make recommendations for ${data.firstName}'s ${data.primarySport.toLowerCase()} focus 🏆`
                   : data.firstName 
                   ? `Hi ${data.firstName}! Select your sport to see personalized recommendations 💪`
                   : data.primarySport

@@ -81,13 +81,13 @@ const LandingPage: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div className="max-w-2xl">
               <h1 className="text-3xl tracking-tight font-extrabold text-white sm:text-4xl md:text-5xl uppercase">
-                All good things begin<br />
-                with <span className="text-primary-500">good health</span><br />
-                and exercise.
+                <span className="text-primary-500">AI and technology</span> to improve young<br />
+                athlete’s performance.
               </h1>
               
               <p className="mt-6 text-base text-white/80 sm:text-lg max-w-xl">
-                We are here to facilitate the interaction between athletes and their academies while helping to improve their health, in order to provide exceptional care for a better life.
+              Leveraging 100’s of data points and thousands of athlete’s health and performance stats, Sportive AI is an AI-
+              native platform with a proprietary algorithm designed to help young athletes improve their performance.
               </p>
               
               <div className="mt-10 flex flex-row gap-4">
@@ -98,7 +98,7 @@ const LandingPage: React.FC = () => {
                   onClick={handleRegisterClick}
                   className="px-8 py-3 text-sm font-semibold rounded-full text-white bg-primary-500 hover:bg-primary-600 uppercase transition-all duration-300"
                 >
-                  Register My Child
+                  Create my child’s profile
                 </button>
               </div>
             </div>

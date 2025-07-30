@@ -302,7 +302,7 @@ const Step6Summary: React.FC = () => {
 
           {/* Goals & Preferences Grid */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-6 text-center">Goals & Preferences</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-6 text-center">Performance Goals</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {data.goals.map((goal, index) => (
                 <div key={index} className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl p-4 shadow-sm text-center border border-primary-200">
@@ -318,39 +318,6 @@ const Step6Summary: React.FC = () => {
                 </div>
               ))}
             </div>
-            
-            {/* Taste Preferences Row */}
-            {data.tastePreferences.length > 0 && (
-              <div className="mt-6">
-                <h4 className="text-md font-medium text-gray-700 mb-4 text-center">Taste Preferences</h4>
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                  {data.tastePreferences.slice(0, 6).map((taste, index) => (
-                    <div key={index} className="bg-green-50 rounded-2xl p-3 shadow-sm text-center border border-green-200">
-                      <div className="text-xl mb-1">
-                        {taste === 'Vanilla' && '🍦'}
-                        {taste === 'Chocolate' && '🍫'}
-                        {taste === 'Strawberry' && '🍓'}
-                        {taste === 'Banana' && '🍌'}
-                        {taste === 'Orange' && '🍊'}
-                        {taste === 'Berry' && '🫐'}
-                        {taste === 'Tropical' && '🥭'}
-                        {taste === 'Mint' && '🌿'}
-                        {!['Vanilla', 'Chocolate', 'Strawberry', 'Banana', 'Orange', 'Berry', 'Tropical', 'Mint'].includes(taste) && '🍎'}
-                      </div>
-                      <div className="text-sm font-medium text-green-800">{taste}</div>
-                      <div className="text-xs text-green-600">Preferred</div>
-                    </div>
-                  ))}
-                  {data.tastePreferences.length > 6 && (
-                    <div className="bg-green-50 rounded-2xl p-3 shadow-sm text-center border border-green-200">
-                      <div className="text-xl mb-1">➕</div>
-                      <div className="text-sm font-medium text-green-800">+{data.tastePreferences.length - 6}</div>
-                      <div className="text-xs text-green-600">More</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Navigation Buttons */}

@@ -26,21 +26,21 @@ const OnboardingFlow: React.FC = () => {
       title: 'Identity & Sport', 
       component: Step1Identity,
       headerTitle: "LET'S GET STARTED",
-      headerSubtitle: "Tell us about your child to personalize their nutrition recommendations"
+      headerSubtitle: "Tells us more about you child and let's Sportive AI do the rest !"
     },
     { 
       number: 2, 
       title: 'Health & Medical', 
       component: Step2Health,
       headerTitle: "HEALTH INFORMATION",
-      headerSubtitle: "Help us ensure safe and appropriate recommendations for your child"
+      headerSubtitle: "Health and safety are at the core of SportiveAI’s DNA. Tell us more about your child"
     },
     { 
       number: 3, 
       title: 'Training & Habits', 
       component: Step3Training,
       headerTitle: "TRAINING INFORMATION",
-      headerSubtitle: "Tell us about your child's training routine and experience level"
+      headerSubtitle: "Let’s talk about your child training routine"
     },
     { 
       number: 4, 
@@ -61,7 +61,7 @@ const OnboardingFlow: React.FC = () => {
       title: 'AI Questionnaire', 
       component: Step5AIQuestionnaire,
       headerTitle: "AI-POWERED PERSONALIZATION",
-      headerSubtitle: "Final details to create personalized supplement recommendations"
+      headerSubtitle: "Now, let’s focus on diets to personalize supplement recommendations"
     },
     { 
       number: 7, 
@@ -132,12 +132,12 @@ const OnboardingFlow: React.FC = () => {
       <div className="flex min-h-[calc(100vh-6rem)] relative z-10">
         
         {/* Sticky Progress Bar - Left Side */}
-        <div className="fixed top-24 lg:top-32 left-4 lg:left-8 w-64 lg:w-72 h-[calc(100vh-8rem)] lg:h-[calc(100vh-12rem)] max-h-[500px] lg:max-h-[600px] bg-black rounded-2xl shadow-2xl z-10 overflow-hidden">
-          <div className="p-4 lg:p-5 h-full flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+        <div className="fixed top-24 lg:top-28 left-4 lg:left-8 w-60 lg:w-64 h-[calc(100vh-10rem)] sm:h-[calc(100vh-9rem)] md:h-[calc(100vh-8rem)] lg:h-[calc(100vh-7rem)] min-h-[400px] max-h-[75vh] bg-black rounded-2xl shadow-2xl z-10 overflow-hidden">
+          <div className="p-4 h-full flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
             
             {/* Progress Header */}
-            <div className="mb-4 lg:mb-6">
-              <h2 className="text-yellow-400 text-xs font-bold uppercase tracking-wider mb-2 lg:mb-3">
+            <div className="mb-4">
+              <h2 className="text-yellow-400 text-xs font-bold uppercase tracking-wider mb-2">
                 YOUR PROGRESS
               </h2>
               <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
@@ -146,19 +146,19 @@ const OnboardingFlow: React.FC = () => {
                   style={{ width: `${(currentStep / steps.length) * 100}%` }}
                 />
               </div>
-              <p className="text-gray-500 text-xs mt-2">
+              <p className="text-gray-500 text-[10px] mt-1">
                 {currentStep} of {steps.length} steps completed
               </p>
             </div>
 
             {/* Steps List */}
-            <div className="space-y-0.5 lg:space-y-1 flex-1">
+            <div className="space-y-0.5 flex-1">
               {steps.map((step) => (
                 <div 
                   key={step.number} 
-                  className="flex items-center space-x-2 lg:space-x-3 py-1 lg:py-1.5"
+                  className="flex items-center space-x-2 py-1"
                 >
-                  <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center text-xs lg:text-sm font-bold ${
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all duration-300 ${
                     step.number < currentStep
                       ? 'bg-primary-500 text-white'
                       : step.number === currentStep
@@ -166,7 +166,7 @@ const OnboardingFlow: React.FC = () => {
                       : 'bg-gray-800 text-gray-500 border border-gray-700'
                   }`}>
                     {step.number < currentStep ? (
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     ) : (
@@ -174,13 +174,13 @@ const OnboardingFlow: React.FC = () => {
                     )}
                   </div>
                   <div className="flex-1">
-                    <p className={`text-xs font-medium ${
+                    <p className={`text-[11px] font-medium ${
                       step.number <= currentStep ? 'text-white' : 'text-gray-500'
                     }`}>
                       {step.title}
                     </p>
                     {step.number === currentStep && (
-                      <p className="text-[10px] text-gray-600 mt-0.5">
+                      <p className="text-[9px] text-gray-600 mt-0.5">
                         Current step
                       </p>
                     )}
@@ -190,12 +190,12 @@ const OnboardingFlow: React.FC = () => {
             </div>
 
             {/* Additional Info */}
-            <div className="mt-4 lg:mt-6 p-2 lg:p-3 bg-green-950/50 rounded-lg border border-green-900/50">
+            <div className="mt-4 p-3 bg-green-950/50 rounded-lg border border-green-900/50">
               <div className="flex items-center space-x-2 mb-1">
                 <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                 </svg>
-                <p className="text-xs text-green-500 font-medium">
+                <p className="text-[11px] text-green-500 font-medium">
                   Take your time
                 </p>
               </div>
@@ -207,7 +207,7 @@ const OnboardingFlow: React.FC = () => {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 ml-72 lg:ml-80 flex items-center justify-center">
+        <div className="flex-1 ml-64 lg:ml-72 flex items-center justify-center">
           {/* Step Content */}
           <main className="w-full max-w-3xl px-4 sm:px-6 lg:px-8">
             <AnimatePresence mode="wait">

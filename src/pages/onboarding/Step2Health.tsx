@@ -354,7 +354,7 @@ const Step2Health: React.FC = () => {
               </div>
               <p className="text-sm text-blue-700">
                 {data.height && data.weight 
-                  ? `Physical profile: ${data.height}ft, ${data.weight}lbs - Building personalized recommendations! 🏥`
+                  ? `SportiveAI is establishing ${data.firstName}’s health profile, matching it with our database of young athletes to built personalized recommendations`
                   : data.height 
                   ? `Height recorded: ${data.height}ft - Add weight to continue profiling 📏`
                   : data.weight
