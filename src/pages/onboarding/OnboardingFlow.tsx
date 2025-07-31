@@ -97,7 +97,7 @@ const OnboardingFlow: React.FC = () => {
           <div className="flex justify-between items-center h-24">
             <div className="flex items-center flex-1">
               <img 
-                src="/assets/logo-white.png" 
+                src={currentStep === 8 ? "/assets/logoanimé.gif" : "/assets/logo-white.png"} 
                 alt="SportiveAI" 
                 className="h-14 w-auto mr-12"
               />
@@ -137,7 +137,7 @@ const OnboardingFlow: React.FC = () => {
             
             {/* Progress Header */}
             <div className="mb-4">
-              <h2 className="text-yellow-400 text-xs font-bold uppercase tracking-wider mb-2">
+              <h2 className="text-yellow-400 text-base font-bold uppercase tracking-wider mb-2">
                 YOUR PROGRESS
               </h2>
               <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
@@ -146,7 +146,7 @@ const OnboardingFlow: React.FC = () => {
                   style={{ width: `${(currentStep / steps.length) * 100}%` }}
                 />
               </div>
-              <p className="text-gray-500 text-[10px] mt-1">
+              <p className="text-gray-500 text-sm mt-1">
                 {currentStep} of {steps.length} steps completed
               </p>
             </div>
@@ -174,13 +174,13 @@ const OnboardingFlow: React.FC = () => {
                     )}
                   </div>
                   <div className="flex-1">
-                    <p className={`text-[11px] font-medium ${
+                    <p className={`text-sm font-medium ${
                       step.number <= currentStep ? 'text-white' : 'text-gray-500'
                     }`}>
                       {step.title}
                     </p>
                     {step.number === currentStep && (
-                      <p className="text-[9px] text-gray-600 mt-0.5">
+                      <p className="text-xs text-gray-600 mt-0.5">
                         Current step
                       </p>
                     )}
@@ -195,11 +195,11 @@ const OnboardingFlow: React.FC = () => {
                 <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                 </svg>
-                <p className="text-[11px] text-green-500 font-medium">
+                <p className="text-sm text-green-500 font-medium">
                   Take your time
                 </p>
               </div>
-              <p className="text-[10px] text-green-400 leading-relaxed">
+              <p className="text-xs text-green-400 leading-relaxed">
                 Complete each step carefully for the best personalized recommendations.
               </p>
             </div>
